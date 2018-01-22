@@ -1,0 +1,159 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+{% if status_message %}
+    <div class="alert alert-info" align="center">
+        <h3>{{status_message}}</h3>
+    </div>
+{% endif %}
+
+{% if error_message %}
+    <div class="alert alert-danger" align="center">
+        <h3>{{error_message}}</h3>
+    </div>
+{% endif %}
+<div id="page-wrapper">
+    <div class="row">
+                <div class="col-sm-3">
+                    <h1 class="text-primary"><strong>Perfil</strong></h1>
+                    <img src="https://pickaface.net/assets/images/slides/slide2.png" class="rounded float-right" height="100">
+                    <br/>
+                    Perfil criado em {{created_at}}
+                    Perfil atualizado em {{updated_at}}
+                </div>
+                <!-- /.col-lg-12 -->
+                <div class="col-lg-12">
+                    <form enctype="multipart/form-data" id="profile_form" method="post" action="{% url 'profile' %}">
+                        {% csrf_token %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Informações Pessoais
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <form role="form">
+                                             <div class="radio form-group">
+                                                <label>
+                                                    <input type="radio" name="optionsRadios" id="cpf_radio" value="cpf" required> Pessoa Física
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsRadios" id="cnpj_radio" value="cnpj" required> Pessoa Jurídica
+                                                </label>
+                                            </div>
+                                        <div class="panel panel-default" id="panel_profile" hidden>
+                                            <div class="panel-heading">
+                                                <label id="panel_title"></label>
+                                            </div>
+                                            <div class="panel-body">
+
+                                                <div class="form-group">
+                                                    <label id="label_cpf">*CPF</label>
+                                                    {% if cpf %}
+                                                        <input id="input_cpf" class="form-control" placeholder="*CPF" cpf="cpf">{{cpf}}
+                                                    {% else %}
+                                                        <input id="input_cpf" class="form-control" placeholder="*CPF" cpf="cpf">
+                                                    {% endif %}
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label id="label_cnpj">*CNPJ</label>
+                                                    {% if cnpj %}
+                                                        <input id="input_cnpj" class="form-control" placeholder="*CNPJ" cnpj="cnpj">{{cnpj}}
+                                                    {% else %}
+                                                        <input id="input_cnpj" class="form-control" placeholder="*CNPJ" cnpj="cnpj">
+                                                    {% endif %}
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label id="nome_pf">* Nome Completo</label>
+                                                    {% if nome %}
+                                                        <input id="input_nome_pf" class="form-control" placeholder="Nome completo" value="{{nome}}">
+                                                        <p id="help_pf" class="help-block">Desejável nome completo para envio do boleto</p>
+
+                                                        <label id="nome_pj">* Razão Social</label>
+                                                        <input id="input_nome_pj" class="form-control" placeholder="Razão Social" value="{{nome}}">
+                                                        <p id="help_pj" class="help-block">Razão Social</p>
+                                                    {% else %}
+                                                        <input id="input_nome_pf" class="form-control" placeholder="Nome completo">
+                                                        <p id="help_pf" class="help-block">Desejável nome completo para envio do boleto</p>
+
+                                                        <label id="nome_pj">* Razão Social</label>
+                                                        <input id="input_nome_pj" class="form-control" placeholder="Razão Social">
+                                                        <p id="help_pj" class="help-block">Razão Social</p>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+
+                                            <div class="panel-footer">
+                                                * Dados utilizados no envio do boleto
+                                            </div>
+                                        </div>
+
+                                            <div class="form-group">
+                                                <label>Email Principal (Login)</label>
+                                                <p class="text-primary">{{request.user}}</p>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Email Alternativo</label>
+                                                {% if alternative_email %}
+                                                    <input class="form-control" placeholder="E-mail Alternativo" value="{{alternative_email}}" name="alternative_email">
+                                                {% else %}
+                                                    <input class="form-control" placeholder="E-mail Alternativo"name="alternative_email">
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>*Telefone(s) (com DDD)</label>
+                                                {% if phones %}
+                                                    <input class="form-control" placeholder="*Telefone(s) (com DDD)" value="{{phones}}">
+                                                {% else %}
+                                                    <input class="form-control" placeholder="*Telefone(s) (com DDD)">
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>*Responsáveis</label>
+                                                {% if responsibles %}
+                                                    <input class="form-control" placeholder="*Ex: João(Financeiro), José(Administrativo)" value="{{responsibles}}">
+                                                    <p class="help-block">Pessoas responsáveis ou para contato</p>
+
+                                                {% else %}
+                                                    <input class="form-control" placeholder="*Ex: João(Financeiro), José(Administrativo)">
+                                                    <p class="help-block">Pessoas responsáveis ou para contato</p>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Foto de Perfil</label>
+                                                <input type="file" name="avatar_photo">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Informações adicionais</label>
+                                                {% if observations %}
+                                                    <textarea class="form-control" rows="3" placeholder="Digite aqui qualquer tipo de informação adicional desejada." observations="observacoes">{{observations}}</textarea>
+                                                {% else %}
+                                                    <textarea class="form-control" rows="3" placeholder="Digite aqui qualquer tipo de informação adicional desejada." observations="observacoes"></textarea>
+                                                {% endif %}
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<button type="submit" form="form1" value="Submit">Submit</button>Try it Yourself »-->
+                        <button type="submit" class="btn btn-primary" form="profile_form">Salvar</button>  <button type="submit" class="btn btn-danger" form="profile_form">Cancelar</button>
+                    </form>
+                </div>
+    </div>
+
+</div>
+
+<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'js/funcoes_apoio.js' %}"></script>
+{% endblock %}
