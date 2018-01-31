@@ -41,7 +41,7 @@ class CustomerDetails(models.Model):
     created_at = models.DateField('Atualizado em', auto_now_add=True)
     updated_at = models.DateField('Atualizado em', auto_now=True)
     observations = models.CharField('Observações', max_length=500, null=True, blank=True)
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/', default='avatars/default.png', blank=True, null=True)
 
     def __str__(self):
         return self.email

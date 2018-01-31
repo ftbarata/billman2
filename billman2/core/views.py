@@ -82,16 +82,20 @@ def profile(request):
             created_at = customer.created_at
             updated_at = customer.updated_at
             form_instance = ProfileForm(request.POST, request.FILES, instance=customer)
-            if form_instance.is_valid():
-                print('teste')
-                form_instance.save()
-            else:
-                print(form_instance.errors)
 
+            if 'avatar-clear' in request.POST and request.POST['avatar-clear'] == 'on':
+                form_instance.avatar = 'avatars/default.png'
+                form_instance.save()
+
+            if form_instance.is_valid():
+                form_instance.save()
             return render(request, 'core/profile.html', {'remote_addr': remote_addr, 'updated_at':updated_at, 'created_at': created_at, 'form': form_instance})
         else:
             try:
                 customer = CustomerDetails.objects.get(email=request.user)
+                if not customer.avatar:
+                    customer.avatar = 'avatars/default.png'
+                    customer.save()
             except ObjectDoesNotExist:
                 customer = CustomerDetails.objects.create(email=request.user)
             finally:
